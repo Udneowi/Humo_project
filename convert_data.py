@@ -30,8 +30,10 @@ for subject in data:
         
         exp_data = np.array(half['expChannels']).squeeze()
         exp_data = exp_data[:,3:].reshape([-1,27,3])
+
+        exp_data = exp_data[:,:,[2,1,0]]
         
-        quat_data = expmap_to_quaternion(-exp_data)
+        quat_data = expmap_to_quaternion(exp_data)
         quat_data = qfix(quat_data)
         
         out_pos.append(np.zeros((quat_data.shape[0],3)))
