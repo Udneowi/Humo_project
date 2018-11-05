@@ -23,7 +23,8 @@ class PoseNetwork:
         
         self.model = QuaterNet(num_joints, num_outputs, num_controls, model_velocities)
         self.use_cuda = False
-        
+       
+        self.num_joints = num_joints	 
         self.prefix_length = prefix_length
             
         dec_params = 0
@@ -130,7 +131,7 @@ class PoseNetwork:
 
                     loss_total = penalty_loss + loss
                     loss_total.backward()
-                    gradient_norms.append(nn.utils.clip_grad_norm_(self.model.parameters(), gradient_clip).item())
+                    gradient_norms.append(nn.utils.clip_grad_norm_(self.model.parameters(), gradient_clip))
                     optimizer.step()
 
                     # Compute statistics

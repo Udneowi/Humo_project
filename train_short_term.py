@@ -7,12 +7,12 @@
 
 import torch
 from short_term.pose_network_short_term import PoseNetworkShortTerm
-from short_term.dataset_h36m import dataset, subjects_train, subjects_valid, short_term_weights_path
+from short_term.dataset_imperial import dataset, subjects_train, subjects_valid, short_term_weights_path
 from test_short_term import run_evaluation
 torch.manual_seed(1234)
 
 if __name__ == '__main__':
-    model = PoseNetworkShortTerm(prefix_length=50)
+    model = PoseNetworkShortTerm(prefix_length=50,num_joints = 27)
     if torch.cuda.is_available():
         model.cuda()
 

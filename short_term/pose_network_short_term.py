@@ -12,14 +12,14 @@ import torch
 
 class PoseNetworkShortTerm(PoseNetwork):
     
-    def __init__(self, prefix_length):
-        super().__init__(prefix_length, 32, 0, 0, model_velocities=True)
+    def __init__(self, prefix_length,num_joints=32):
+        super().__init__(prefix_length, num_joints, 0, 0, model_velocities=True)
         
     def _prepare_next_batch_impl(self, batch_size, dataset, target_length, sequences):
         super()._prepare_next_batch_impl(batch_size, dataset, target_length, sequences)
         
-        buffer_quat = np.zeros((batch_size, self.prefix_length+target_length, 32*4), dtype='float32')
-        buffer_euler = np.zeros((batch_size, target_length, 32*3), dtype='float32')
+        buffer_quat = np.zeros((batch_size, self.prefix_length+target_length, self.num_joints*4), dtype='float32')
+        buffer_euler = np.zeros((batch_size, target_length, self.num_joints*3), dtype='float32')
         
         sequences = np.random.permutation(sequences)
 

@@ -26,7 +26,7 @@ with open(filename) as file:
 
 for subject in data:
     print('Loading subject: ',subject['info'],'...',sep='')
-    for half in subject['trialData'][1:]:
+    for i, half in enumerate(subject['trialData'][1:]):
         
         exp_data = np.array(half['expChannels']).squeeze()
         exp_data = exp_data[:,3:].reshape([-1,27,3])
@@ -37,7 +37,7 @@ for subject in data:
         out_pos.append(np.zeros((quat_data.shape[0],3)))
         out_subjects.append(subject['info'])
         out_rot.append(quat_data)
-        out_actions.append('walking')
+        out_actions.append('walking_'+str(i+1))
 
 print('Saving data...')
 np.savez_compressed(output_file_path,

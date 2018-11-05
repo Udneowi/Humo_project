@@ -10,7 +10,7 @@ import numpy as np
 from common.mocap_dataset import MocapDataset
 from common.quaternion import qeuler_np
 from short_term.pose_network_short_term import PoseNetworkShortTerm
-from short_term.dataset_h36m import dataset, subjects_test, short_term_weights_path
+from short_term.dataset_imperial import dataset, subjects_test, short_term_weights_path
 torch.manual_seed(1234)
 
 def find_indices_srnn(data, action, subject, num_seeds, prefix_length, target_length):
@@ -42,7 +42,7 @@ def build_sequence_map_srnn(data):
             if not '_d0' in action or '_m' in action:
                 continue
             act, sub, _ = action.split('_')
-            out[(int(subject[1:]), act, int(sub))] = seq['rotations']
+            out[(int(subject[7:]), act, int(sub))] = seq['rotations']
     return out
 
 def get_test_data(data, action, subject):
@@ -70,15 +70,15 @@ def get_test_data(data, action, subject):
 def evaluate(model, test_data):
     errors = []
     for d in test_data:
-        source = np.concatenate((d[0], d[1][:1]), axis=0).reshape(-1, 32*4)
-        target = d[2].reshape(-1, 32*4)
+        source = np.concatenate((d[0], d[1][:1]), axis=0).reshape(-1, model.num_joints*4)
+        target = d[2].reshape(-1, model.num_joints*4)
         if model is None:
-            target_predicted = np.tile(source[-1], target.shape[0]).reshape(-1, 32*4)
+            target_predicted = np.tile(source[-1], target.shape[0]).reshape(-1, model.num_joints*4)
         else:
-            target_predicted = model.predict(np.expand_dims(source, 0), target_length=np.max(frame_targets)+1).reshape(-1, 32*4)
+            target_predicted = model.predict(np.expand_dims(source, 0), target_length=np.max(frame_targets)+1).reshape(-1, model.num_joints*4)
             
-        target = qeuler_np(target[:target_predicted.shape[0]].reshape(-1, 4), 'zyx').reshape(-1, 96)
-        target_predicted = qeuler_np(target_predicted.reshape(-1, 4), 'zyx').reshape(-1, 96)
+        target = qeuler_np(target[:target_predicted.shape[0]].reshape(-1, 4), 'zyx').reshape(-1, model.num_joints*3)
+        target_predicted = qeuler_np(target_predicted.reshape(-1, 4), 'zyx').reshape(-1, model.num_joints*3)
         e = np.sqrt(np.sum((target_predicted[:, 3:] - target[:, 3:])**2, axis=1))
         errors.append(e)
     errors = np.mean(np.array(errors), axis=0)
@@ -97,10 +97,10 @@ def run_evaluation(model=None):
         for subject_test in subjects_test:
             print('Testing on subject', subject_test)
             print()
-            for idx, action in enumerate(['walking', 'eating', 'smoking', 'discussion',
-                      'directions', 'greeting', 'phoning', 'posing', 'purchases',
-                      'sitting', 'sittingdown', 'takingphoto', 'waiting', 'walkingdog', 'walkingtogether']):
-                test_data = get_test_data(dataset, action, int(subject_test[1:]))
+            for idx, action in enumerate(['walking']):#, 'eating', 'smoking', 'discussion',
+                      #'directions', 'greeting', 'phoning', 'posing', 'purchases',
+                      #'sitting', 'sittingdown', 'takingphoto', 'waiting', 'walkingdog', 'walkingtogether']):
+                test_data = get_test_data(dataset, action, int(subject_test[7:]))
                 errors = evaluate(model, test_data)
                 all_errors[idx] = errors
                 print_results(action, errors)
@@ -108,7 +108,7 @@ def run_evaluation(model=None):
 
 
 if __name__ == '__main__':
-    model = PoseNetworkShortTerm(prefix_length=50)
+    model = PoseNetworkShortTerm(prefix_length=50,num_joints = 27)
     if torch.cuda.is_available():
         model.cuda()
     model.load_weights(short_term_weights_path)
