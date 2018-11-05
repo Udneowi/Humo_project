@@ -23,7 +23,7 @@ def render_animation(data, skeleton, fps, output='interactive', bitrate=1000):
     x = 0
     y = 1
     z = 2
-    radius = torch.max(skeleton.offsets()).item() * 5 # Heuristic that works well with many skeletons
+    radius = torch.max(skeleton.offsets()).item() * 10
     
     skeleton_parents = skeleton.parents()
 
