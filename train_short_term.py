@@ -14,6 +14,7 @@ torch.manual_seed(1234)
 if __name__ == '__main__':
     model = PoseNetworkShortTerm(prefix_length=50)
     if torch.cuda.is_available():
+	print('GPU:', torch.cuda.get_device_name(0))
         model.cuda()
 
     sequences_train = []

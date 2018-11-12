@@ -24,6 +24,7 @@ if __name__ == '__main__':
 
     model = PoseNetworkLongTermSubject(prefix_length, dataset.skeleton(), long_term_weights_path)
     if torch.cuda.is_available():
+	print('GPU:', torch.cuda.get_device_name(0))
         model.cuda()
         dataset.cuda()
 
