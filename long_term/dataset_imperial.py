@@ -18,25 +18,12 @@ import numpy as np
 # Set to True for validation.
 # There is no test set here, since we do not evaluate numerically
 # for long-term generation of locomotion.
-perform_validation = True
+perform_validation = False #True
 
 if perform_validation:
-    subjects_train = ['Subject1', 'Subject2', 'Subject3', 'Subject4', 'Subject5', 
-                      'Subject6', 'Subject7', 'Subject8', 'Subject9', 'Subject10', 
-                      'Subject11', 'Subject12', 'Subject13', 'Subject14', 'Subject15', 
-                      'Subject16', 'Subject17', 'Subject18', 'Subject19', 'Subject20', 
-                      'Subject21', 'Subject22', 'Subject23', 'Subject24']
-    subjects_valid = ['Subject25']
-    subjects_test = ['Subject26']
+    actions_valid = ['jog_1', 'walk_4', 'run_1']
 else:
-    subjects_train = ['Subject1', 'Subject2', 'Subject3', 'Subject4', 'Subject5', 
-                      'Subject6', 'Subject7', 'Subject8', 'Subject9', 'Subject10', 
-                      'Subject11', 'Subject12', 'Subject13', 'Subject14', 'Subject15', 
-                      'Subject16', 'Subject17', 'Subject18', 'Subject19', 'Subject20', 
-                      'Subject21', 'Subject22', 'Subject23', 'Subject24','Subject25']
-    subjects_valid = []
-    subjects_test = ['Subject26']
-
+    actions_valid = []
 # Note: the "joints_left" and "joint_right" indices refer to the optimized skeleton
 # after calling "remove_joints".
 skeleton_imperial = Skeleton(offsets=[
@@ -71,9 +58,9 @@ skeleton_imperial = Skeleton(offsets=[
     joints_left=[1, 2, 3, 4, 5, 17, 18, 19, 20, 21],
     joints_right=[6, 7, 8, 9, 10, 22, 23, 24, 25, 26])
 
-dataset_path = 'datasets/dataset_long_term.npz'
+dataset_path = 'datasets/dataset_quat.npz'
 long_term_weights_path = 'weights_long_term.bin'
-dataset = MocapDataset(dataset_path, skeleton_cmu, fps=120)
+dataset = MocapDataset(dataset_path, skeleton_imperial, fps=120)
 
 # Remove useless joints, from both the skeleton and the dataset
 #skeleton_cmu.remove_joints([13, 21, 23, 28, 30], dataset)
