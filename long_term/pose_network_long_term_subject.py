@@ -1,17 +1,17 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from pose_network_long_term import PoseNetworkLongTerm
+from long_term.pose_network_long_term import PoseNetworkLongTerm
 
 class PoseNetworkLongTermSubject(PoseNetworkLongTerm):
 
     def __init__(self, prefix_length, skeleton, weight_path):
         super().__init__(prefix_length, skeleton)
-        self.model.load_weights(weight_path)
+        self.load_weights(weight_path)
         self.model.requires_grad = False
 
         self.num_input = self.model.num_joints*4
-        self.fc1 = nn.Linear(num_input, 4*num_input)
-        self.fc2 = nn.Linear(4*num_input, num_input)
+        self.fc1 = nn.Linear(self.num_input, 4*self.num_input)
+        self.fc2 = nn.Linear(4*self.num_input, self.num_input)
         self.relu = nn.LeakyReLU(0.05, inplace=True)
 
     def forward(self, x, h=None, return_prenorm=False, return_all=False):

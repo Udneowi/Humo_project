@@ -13,7 +13,7 @@ torch.manual_seed(1234)
 
 if __name__ == '__main__':
     subject = 'S1'
-    weight_path = 'weights_long_term.bin'
+    weight_path = 'weights_long_term_'+subject+'.bin'
     prefix_length = 30
     target_length = 60
 
