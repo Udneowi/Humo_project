@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     model = PaceNetwork()
     if torch.cuda.is_available():
-	print('GPU:', torch.cuda.get_device_name(0))
+        print('GPU:', torch.cuda.get_device_name(0))
         model.cuda()
 
     chunk_length = 1000
