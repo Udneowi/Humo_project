@@ -5,6 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import sys
 import torch
 from long_term.pose_network_long_term_subject import PoseNetworkLongTermSubject
 from long_term.dataset_locomotion import dataset, actions_valid, long_term_weights_path
@@ -12,12 +13,16 @@ from long_term.locomotion_utils import build_extra_features
 torch.manual_seed(1234)
 
 if __name__ == '__main__':
-    subject = 'S1'
-    weight_path = 'weights_long_term_'+subject+'.bin'
+    if len(sys.argv) < 2:
+        print('Must supply subject name')
+        sys.exit(-1)
+
+    subject = sys.argv[1]
+    subject_weights_path = 'weights_long_term_' + subject + '.bin'
     prefix_length = 30
     target_length = 60
 
-    model = PoseNetworkLongTermSubject(prefix_length, dataset.skeleton(), weight_path)
+    model = PoseNetworkLongTermSubject(prefix_length, dataset.skeleton(), long_term_weights_path)
     if torch.cuda.is_available():
         model.cuda()
         dataset.cuda()
@@ -45,4 +50,4 @@ if __name__ == '__main__':
     dataset.compute_positions()
     build_extra_features(dataset)
     model.train(dataset, target_length, sequences_train, sequences_valid, batch_size=40, n_epochs=4000)
-    model.save_weights(long_term_weights_path)
+    model.save_weights(subject_weights_path)
