@@ -7,7 +7,7 @@
 
 import torch
 from long_term.pose_network_long_term import PoseNetworkLongTerm
-from long_term.dataset_locomotion import dataset, actions_valid, long_term_weights_path
+from long_term.dataset_imperial import dataset, actions_valid, long_term_weights_path
 from long_term.locomotion_utils import build_extra_features
 torch.manual_seed(1234)
 
