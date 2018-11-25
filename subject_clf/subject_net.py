@@ -28,6 +28,7 @@ class SubjectNet(nn.Module):
         self.model = nn.Sequential(
             nn.LeakyReLU(0.05),
             nn.Linear(qn_out, fc1_out),
+            nn.BatchNorm1d(fc1_out),
             nn.ReLU(),
             nn.Linear(fc1_out, fc2_out)
         )
@@ -131,29 +132,11 @@ def train_subject_net(subject_net, batch_size, sequences_train, sequences_valid,
 
             # Validate
             if epoch > 0 and (epoch+1) % validate_every == 0:
-                with torch.no_grad():
-                    subject_net.eval()
-                    valid_loss = 0
-                    n_correct = 0
-                    N = 0
-                    for batch_in, batch_out in prepare_next_batch(subject_net, batch_size, sequences_valid, dataset):
-                        inputs = torch.from_numpy(batch_in)
-                        outputs = torch.from_numpy(batch_out)
+                valid_loss = validate_subject_net(subject_net, batch_size, sequences_valid, dataset, criterion)
+                valid_losses.append(valid_loss)
+                print('Validation loss: %.5f, acc: %.5f' % (valid_loss, n_correct / N))
 
-                        if subject_net.use_cuda:
-                            inputs = inputs.cuda()
-                            outputs = outputs.cuda()
-
-                        clfs = subject_net(inputs)
-                        loss = criterion(clfs, outputs)
-                        n_correct += torch.nonzero(F.softmax(clfs, dim=1).argmax(dim=1) == outputs).size(0)
-                        valid_loss += loss.item() * inputs.shape[0]
-                        N += inputs.shape[0]
-                    valid_loss /= N
-                    valid_losses.append(valid_loss)
-
-                    print('Validation loss: %.5f, acc: %.5f' % (valid_loss, n_correct / N))
-
+            # Benchmark
             if epoch > 0 and (epoch+1) % benchmark_every == 0:
                 next_time = time()
                 time_per_epoch = (next_time - start_time)/(epoch - start_epoch)
@@ -165,3 +148,26 @@ def train_subject_net(subject_net, batch_size, sequences_train, sequences_valid,
 
     print('Done')
     return subject_net, losses
+
+
+def validate_subject_net(subject_net, batch_size, sequences_valid, dataset, criterion):
+    with torch.no_grad():
+        subject_net.eval()
+        valid_loss = 0
+        n_correct = 0
+        N = 0
+        for batch_in, batch_out in prepare_next_batch(subject_net, batch_size, sequences_valid, dataset):
+            inputs = torch.from_numpy(batch_in)
+            outputs = torch.from_numpy(batch_out)
+
+            if subject_net.use_cuda:
+                inputs = inputs.cuda()
+                outputs = outputs.cuda()
+
+            clfs = subject_net(inputs)
+            loss = criterion(clfs, outputs)
+            n_correct += torch.nonzero(F.softmax(clfs, dim=1).argmax(dim=1) == outputs).size(0)
+            valid_loss += loss.item() * inputs.shape[0]
+            N += inputs.shape[0]
+        valid_loss /= N
+        return valid_loss

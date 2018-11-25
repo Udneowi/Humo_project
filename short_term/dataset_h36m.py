@@ -23,9 +23,9 @@ if perform_validation:
     subjects_valid = ['S6']
     subjects_test = ['S5']
 else:
-    subjects_train = ['S1', 'S6', 'S7', 'S8', 'S9', 'S11']
+    subjects_train = ['S1', 'S5', 'S6', 'S7', 'S8', 'S9', 'S11']
     subjects_valid = []
-    subjects_test = ['S5']
+    subjects_test = []
 
 dataset_path = 'datasets/dataset_h36m.npz'
 short_term_weights_path = 'weights_short_term.bin'
