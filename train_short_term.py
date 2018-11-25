@@ -20,7 +20,8 @@ if __name__ == '__main__':
     sequences_valid = []
     for subject in subjects_train:
         for action in dataset[subject].keys():
-            sequences_train.append((subject, action))
+            if action.startswith('walking_1'):
+                sequences_train.append((subject, action))
     for subject in subjects_valid:
         for action in dataset[subject].keys():
             sequences_valid.append((subject, action))
