@@ -84,7 +84,7 @@ def prepare_next_batch(subject_net, batch_size, sequences, dataset):
 
 
 def train_subject_net(subject_net, batch_size, sequences_train, sequences_valid, dataset,\
-    n_epochs=1000, benchmark_every=10, validate_every=10):
+    n_epochs=1000, benchmark_every=10, validate_every=10, print_every=1):
     np.random.seed(1337)
 
     batch_size_valid = 30
@@ -129,11 +129,12 @@ def train_subject_net(subject_net, batch_size, sequences_train, sequences_valid,
             batch_loss /= N
             losses.append(batch_loss)
 
-            print('[%d] loss: %.5f, acc: %.5f' % (epoch + 1, batch_loss, n_correct / N))
+            if epoch > 0 and (epoch+1) % print_every == 0:
+                print('[%d] loss: %.5f, acc: %.5f' % (epoch + 1, batch_loss, n_correct / N))
 
             # Validate
             if epoch > 0 and (epoch+1) % validate_every == 0:
-                valid_loss = validate_subject_net(subject_net, batch_size, sequences_valid, dataset, criterion)
+                valid_loss, n_correct, N = validate_subject_net(subject_net, batch_size, sequences_valid, dataset, criterion)
                 valid_losses.append(valid_loss)
                 print('Validation loss: %.5f, acc: %.5f' % (valid_loss, n_correct / N))
 
@@ -171,4 +172,4 @@ def validate_subject_net(subject_net, batch_size, sequences_valid, dataset, crit
             valid_loss += loss.item() * inputs.shape[0]
             N += inputs.shape[0]
         valid_loss /= N
-        return valid_loss
+        return valid_loss, n_correct, N

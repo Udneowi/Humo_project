@@ -23,8 +23,9 @@ if __name__ == '__main__':
     print('Training on %d sequences, validating on %d sequences.' % (len(sequences_train), len(sequences_valid)))
 
     batch_size = 60
-    n_epochs = 800
-    train_subject_net(subject_net, batch_size, sequences_train, sequences_valid, dataset, n_epochs)
+    n_epochs = 2000
+    train_subject_net(subject_net, batch_size, sequences_train, sequences_valid, dataset, n_epochs,
+                      print_every=10, validate_every=100, benchmark_every=100)
 
     # Save weights
     subject_weights_path = 'weights_subject.bin'
