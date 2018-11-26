@@ -10,11 +10,13 @@ if __name__ == '__main__':
     if torch.cuda.is_available():
         subject_net.cuda()
 
+    dataset.mirror()
+
     sequences_train = []
     sequences_valid = []
     for sid, subject in enumerate(dataset.subjects()):
         for action in dataset[subject].keys():
-            if action.split('_')[1] == '1':
+            if action.startswith('walking') and action.split('_')[1] == '1':
                 # Only train on half the actions
                 sequences_train.append((sid, subject, action))
             else:
