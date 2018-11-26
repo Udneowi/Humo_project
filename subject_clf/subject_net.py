@@ -90,7 +90,7 @@ def train_subject_net(subject_net, batch_size, sequences_train, sequences_valid,
     batch_size_valid = 30
 
     lr = 0.001
-    optimizer = optim.Adam(subject_net.parameters(), lr=lr)
+    optimizer = optim.Adam(subject_net.parameters(), lr=lr, weight_decay=0.01)
     criterion = nn.CrossEntropyLoss()
 
     losses = []
