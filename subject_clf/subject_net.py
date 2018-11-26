@@ -30,7 +30,8 @@ class SubjectNet(nn.Module):
             nn.Linear(qn_out, fc1_out),
             nn.BatchNorm1d(fc1_out),
             nn.ReLU(),
-            nn.Linear(fc1_out, fc2_out)
+            nn.Linear(fc1_out, fc2_out),
+            nn.BatchNorm1d(fc2_out)
         )
 
 
