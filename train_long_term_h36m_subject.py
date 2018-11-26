@@ -4,10 +4,10 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import sys
 import torch
+import sys
 from long_term.pose_network_long_term_subject import PoseNetworkLongTermSubject
-from long_term.dataset_locomotion import dataset, actions_valid, long_term_weights_path
+from long_term.dataset_h36m import dataset, long_term_weights_path,subjects_train
 from long_term.locomotion_utils import build_extra_features
 torch.manual_seed(1234)
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     subject = sys.argv[1]
-    subject_weights_path = 'weights_long_term_' + subject + '.bin'
+    subject_weights_path = 'weights_long_term_h36m_' + subject + '.bin'
     prefix_length = 30
     target_length = 60
 
@@ -30,20 +30,13 @@ if __name__ == '__main__':
     sequences_train = []
     sequences_valid = []
     n_discarded = 0
-    for action in dataset[subject].keys():
-        if dataset[subject][action]['rotations'].shape[0] < prefix_length + target_length:
-            n_discarded += 1
-            continue
+    for subject in subjects_train:
+        for action in [a for a in dataset[subject].keys() if a.startswith('walking') and a.split('_')[1] == '1']:
+            if dataset[subject][action]['rotations'].shape[0] < prefix_length + target_length:
+                n_discarded += 1
+                continue
 
-        train = True
-        for action_valid in actions_valid:
-            if action.startswith(action_valid):
-                train = False
-                break
-        if train:
             sequences_train.append((subject, action))
-        else:
-            sequences_valid.append((subject, action))
 
     print('%d sequences were discarded for being too short.' % n_discarded)
     print('Training on %d sequences, validating on %d sequences.' % (len(sequences_train), len(sequences_valid)))
