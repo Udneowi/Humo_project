@@ -21,7 +21,7 @@ if __name__ == '__main__':
     sequences_valid = []
     for subject in subjects_train:
         for action in dataset[subject].keys():
-            if action.split('_')[1] == '1':
+            if action.startswith('walking') and action.split('_')[1] == '1':
                 sequences_train.append((subject, action))
     for subject in subjects_valid:
         for action in dataset[subject].keys():
