@@ -30,13 +30,13 @@ if __name__ == '__main__':
     sequences_train = []
     sequences_valid = []
     n_discarded = 0
-    for subject in subjects_train:
-        for action in [a for a in dataset[subject].keys() if a.startswith('walking') and a.split('_')[1] == '1']:
-            if dataset[subject][action]['rotations'].shape[0] < prefix_length + target_length:
-                n_discarded += 1
-                continue
 
-            sequences_train.append((subject, action))
+    for action in [a for a in dataset[subject].keys() if a.startswith('walking') and a.split('_')[1] == '1']:
+        if dataset[subject][action]['rotations'].shape[0] < prefix_length + target_length:
+            n_discarded += 1
+            continue
+
+        sequences_train.append((subject, action))
 
     print('%d sequences were discarded for being too short.' % n_discarded)
     print('Training on %d sequences, validating on %d sequences.' % (len(sequences_train), len(sequences_valid)))
