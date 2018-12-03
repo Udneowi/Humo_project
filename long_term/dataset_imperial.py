@@ -58,7 +58,7 @@ skeleton_imperial = Skeleton(offsets=[
     joints_left=[1, 2, 3, 4, 5, 17, 18, 19, 20, 21],
     joints_right=[6, 7, 8, 9, 10, 22, 23, 24, 25, 26])
 
-dataset_path = 'datasets/dataset_quat.npz'
+dataset_path = 'datasets/imperial_full.npz'
 long_term_weights_path = 'weights_long_term.bin'
 dataset = MocapDataset(dataset_path, skeleton_imperial, fps=120)
 
@@ -66,5 +66,5 @@ dataset = MocapDataset(dataset_path, skeleton_imperial, fps=120)
 #skeleton_cmu.remove_joints([13, 21, 23, 28, 30], dataset)
 
 #dataset.mirror()
-#dataset.compute_euler_angles('yzx')
+dataset.compute_euler_angles('yzx')
 dataset.downsample(8)
