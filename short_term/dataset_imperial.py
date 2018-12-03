@@ -16,26 +16,27 @@ from common.mocap_dataset import MocapDataset
 from common.skeleton import Skeleton
 
 # Set to True for validation, set to False for testing
-perform_validation = True
+perform_validation = False
 
 if perform_validation:
-    subjects_train = ['Subject1', 'Subject2', 'Subject3', 'Subject4', 'Subject5', 
-                      'Subject6', 'Subject7', 'Subject8', 'Subject9', 'Subject10', 
-                      'Subject11', 'Subject12', 'Subject13', 'Subject14', 'Subject15', 
-                      'Subject16', 'Subject17', 'Subject18', 'Subject19', 'Subject20', 
+    subjects_train = ['Subject1', 'Subject2', 'Subject3', 'Subject4', 'Subject5',
+                      'Subject6', 'Subject7', 'Subject8', 'Subject9', 'Subject10',
+                      'Subject11', 'Subject12', 'Subject13', 'Subject14', 'Subject15',
+                      'Subject16', 'Subject17', 'Subject18', 'Subject19', 'Subject20',
                       'Subject21', 'Subject22', 'Subject23', 'Subject24']
     subjects_valid = ['Subject25']
     subjects_test = ['Subject26']
 else:
-    subjects_train = ['Subject1', 'Subject2', 'Subject3', 'Subject4', 'Subject5', 
-                      'Subject6', 'Subject7', 'Subject8', 'Subject9', 'Subject10', 
-                      'Subject11', 'Subject12', 'Subject13', 'Subject14', 'Subject15', 
-                      'Subject16', 'Subject17', 'Subject18', 'Subject19', 'Subject20', 
-                      'Subject21', 'Subject22', 'Subject23', 'Subject24','Subject25']
+    subjects_train = ['Subject1', 'Subject2', 'Subject3', 'Subject4', 'Subject5',
+                      'Subject6', 'Subject7', 'Subject8', 'Subject9', 'Subject10',
+                      'Subject11', 'Subject12', 'Subject13', 'Subject14', 'Subject15',
+                      'Subject16', 'Subject17', 'Subject18', 'Subject19', 'Subject20',
+                      'Subject21', 'Subject22', 'Subject23', 'Subject24','Subject25',
+                      'Subject26']
     subjects_valid = []
-    subjects_test = ['Subject26']
+    subjects_test = []
 
-dataset_path = 'datasets/dataset_quat.npz'
+dataset_path = 'datasets/data_imperial_2.npz'
 short_term_weights_path = 'weights_short_term.bin'
 
 skeleton_imperial = Skeleton(offsets=[
