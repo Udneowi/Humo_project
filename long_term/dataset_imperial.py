@@ -18,12 +18,8 @@ import numpy as np
 # Set to True for validation.
 # There is no test set here, since we do not evaluate numerically
 # for long-term generation of locomotion.
-perform_validation = False #True
 
-if perform_validation:
-    actions_valid = ['jog_1', 'walk_4', 'run_1']
-else:
-    actions_valid = []
+leave_out = ['Subject26']
 # Note: the "joints_left" and "joint_right" indices refer to the optimized skeleton
 # after calling "remove_joints".
 skeleton_imperial = Skeleton(offsets=[
@@ -60,11 +56,11 @@ skeleton_imperial = Skeleton(offsets=[
 
 dataset_path = 'datasets/imperial_full.npz'
 long_term_weights_path = 'weights_long_term.bin'
-dataset = MocapDataset(dataset_path, skeleton_imperial, fps=120)
+dataset = MocapDataset(dataset_path, skeleton_imperial, fps=120,subject_leave_out = leave_out)
 
 # Remove useless joints, from both the skeleton and the dataset
 #skeleton_cmu.remove_joints([13, 21, 23, 28, 30], dataset)
 
 #dataset.mirror()
-dataset.compute_euler_angles('yzx')
+dataset.compute_euler_angles('zyx')
 dataset.downsample(8)

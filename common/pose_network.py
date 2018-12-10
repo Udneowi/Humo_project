@@ -20,46 +20,46 @@ class PoseNetwork:
         self.translations_size = num_outputs
         self.controls_size = num_controls
         self.model_velocities = model_velocities
-        
+
         self.model = QuaterNet(num_joints, num_outputs, num_controls, model_velocities)
         self.use_cuda = False
-       
-        self.num_joints = num_joints	 
+
+        self.num_joints = num_joints
         self.prefix_length = prefix_length
-            
+
         dec_params = 0
         for parameter in self.model.parameters():
             dec_params += parameter.numel()
         print('# parameters:', dec_params)
-        
+
     def cuda(self):
         self.use_cuda = True
         self.model.cuda()
         return self
-    
+
     def eval(self):
         self.model.eval()
         return self
-            
+
     def _prepare_next_batch_impl(self, batch_size, dataset, target_length, sequences):
         # This method must be implemented by the subclass
         pass
-    
+
     def _loss_impl(self, predicted, expected):
         # This method must be implemented by the subclass
         pass
-    
-    def train(self, dataset, target_length, sequences_train, sequences_valid, batch_size, n_epochs=3000, rot_reg=0.01):
+
+    def train(self, dataset, target_length, sequences_train, sequences_valid, batch_size=30, n_epochs=3000, rot_reg=0.01):
         np.random.seed(1234)
         self.model.train()
-        
+
         lr = 0.001
         batch_size_valid = 30
         lr_decay = 0.999
         teacher_forcing_ratio = 1 # Start by forcing the ground truth
         tf_decay = 0.995 # Teacher forcing decay rate
         gradient_clip = 0.1
-        
+
         optimizer = optim.Adam(self.model.parameters(), lr=lr)
 
         if len(sequences_valid) > 0:
@@ -70,7 +70,7 @@ class PoseNetwork:
             if self.use_cuda:
                 inputs_valid = inputs_valid.cuda()
                 outputs_valid = outputs_valid.cuda()
-        
+
         losses = []
         valid_losses = []
         gradient_norms = []
@@ -85,7 +85,7 @@ class PoseNetwork:
                     # Pick a random chunk from each sequence
                     inputs = torch.from_numpy(batch_in)
                     outputs = torch.from_numpy(batch_out)
-                    
+
                     if self.use_cuda:
                         inputs = inputs.cuda()
                         outputs = outputs.cuda()
@@ -176,19 +176,18 @@ class PoseNetwork:
                     start_epoch = epoch
         except KeyboardInterrupt:
             print('Training aborted.')
-            
+
         print('Done.')
         #print('gradient_norms =', gradient_norms)
         #print('losses =', losses)
         #print('valid_losses =', valid_losses)
         return losses, valid_losses, gradient_norms
 
-        
+
     def save_weights(self, model_file):
         print('Saving weights to', model_file)
         torch.save(self.model.state_dict(), model_file)
-        
+
     def load_weights(self, model_file):
         print('Loading weights from', model_file)
         self.model.load_state_dict(torch.load(model_file, map_location=lambda storage, loc: storage))
-        
