@@ -1,1 +1,5 @@
+*.bin
+*.out
 .ipynb_checkpoints/*
+**__pycache__/
+datasets/*

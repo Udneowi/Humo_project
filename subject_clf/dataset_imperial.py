@@ -22,7 +22,7 @@ subjects = ['Subject1', 'Subject2', 'Subject3', 'Subject4', 'Subject5',
             'Subject21', 'Subject22', 'Subject23', 'Subject24', 'Subject25',
             'Subject26']
 
-dataset_path = 'datasets/data_imperial_2.npz'
+dataset_path = 'datasets/imperial_full.npz'
 short_term_weights_path = 'weights_short_term.bin'
 
 skeleton_imperial = Skeleton(offsets=[
