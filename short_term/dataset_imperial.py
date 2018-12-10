@@ -36,7 +36,7 @@ else:
     subjects_valid = []
     subjects_test = []
 
-dataset_path = 'datasets/data_imperial_2.npz'
+dataset_path = 'datasets/imperial_full.npz'
 short_term_weights_path = 'weights_short_term.bin'
 
 skeleton_imperial = Skeleton(offsets=[
