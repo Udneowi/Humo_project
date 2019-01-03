@@ -1,3 +1,4 @@
+import sys
 import torch
 from subject_clf.subject_net_gen import SubjectNet, train_subject_net
 from subject_clf.dataset_imperial import dataset, subjects, short_term_weights_path
@@ -15,6 +16,11 @@ if __name__ == '__main__':
     pace_net.load_weights('weights_pace_network.bin')
     gen_net = PoseNetworkLongTerm(50, dataset.skeleton())
     gen_net.load_weights('weights_long_term.bin') # Load pretrained model
+
+    if len(sys.argv) > 1 and sys.argv[1] == 'includereal':
+        include_real = True
+    else:
+        include_real = False
 
     dataset.compute_euler_angles('yzx')
     dataset.compute_positions()
@@ -38,7 +44,7 @@ if __name__ == '__main__':
 
     batch_size = 60
     n_epochs = 500
-    train_subject_net(subject_net, pace_net, gen_net, batch_size, sequences_train, sequences_valid, dataset, n_epochs, benchmark_every=1)
+    train_subject_net(subject_net, pace_net, gen_net, batch_size, sequences_train, sequences_valid, dataset, include_real, n_epochs, benchmark_every=1)
 
     # Save weights
     subject_weights_path = 'weights_subject.bin'

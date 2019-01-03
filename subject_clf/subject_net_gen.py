@@ -58,7 +58,7 @@ class SubjectNet(nn.Module):
         return self.model(h[1,:,:])
 
 
-def prepare_next_batch(subject_net, pace_net, gen_net, batch_size, sequences, dataset):
+def prepare_next_batch(subject_net, pace_net, gen_net, batch_size, sequences, dataset, include_real=False):
     prefix_length = subject_net.prefix_length
     num_subjects = subject_net.num_subjects
     num_joints = subject_net.num_joints
@@ -101,13 +101,14 @@ def prepare_next_batch(subject_net, pace_net, gen_net, batch_size, sequences, da
 
         batch_idx += 1
         if batch_idx == batch_size or i == len(sequences) - 1:
-            yield buffer_quat[:batch_idx], buffer_subject[:batch_idx]
+            if include_real:
+                yield buffer_quat[:batch_idx], buffer_subject[:batch_idx]
             yield buffer_quat_gen[:batch_idx], buffer_subject[:batch_idx]
             batch_idx = 0
 
 
 def train_subject_net(subject_net, pace_net, gen_net, batch_size, sequences_train, sequences_valid, dataset,\
-    n_epochs=1000, benchmark_every=10, validate_every=10):
+    include_real=False, n_epochs=1000, benchmark_every=10, validate_every=10):
     np.random.seed(1337)
 
     batch_size_valid = 30
@@ -128,7 +129,7 @@ def train_subject_net(subject_net, pace_net, gen_net, batch_size, sequences_trai
             n_correct = 0
             N = 0
             # Train
-            for batch_in, batch_out in prepare_next_batch(subject_net, pace_net, gen_net, batch_size, sequences_train, dataset):
+            for batch_in, batch_out in prepare_next_batch(subject_net, pace_net, gen_net, batch_size, sequences_train, dataset, include_real):
                 inputs = batch_in
                 outputs = batch_out
 
