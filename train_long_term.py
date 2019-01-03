@@ -7,7 +7,7 @@
 
 import torch
 from long_term.pose_network_long_term import PoseNetworkLongTerm
-from long_term.dataset_imperial import dataset, actions_valid, long_term_weights_path
+from long_term.dataset_imperial import dataset, long_term_weights_path
 from long_term.locomotion_utils import build_extra_features
 torch.manual_seed(1234)
 
@@ -28,16 +28,7 @@ if __name__ == '__main__':
             if dataset[subject][action]['rotations'].shape[0] < prefix_length + target_length:
                 n_discarded += 1
                 continue
-
-            train = True
-            for action_valid in actions_valid:
-                if action.startswith(action_valid):
-                    train = False
-                    break
-            if train:
-                sequences_train.append((subject, action))
-            else:
-                sequences_valid.append((subject, action))
+            sequences_train.append((subject, action))
 
     print('%d sequences were discarded for being too short.' % n_discarded)
     print('Training on %d sequences, validating on %d sequences.' % (len(sequences_train), len(sequences_valid)))
